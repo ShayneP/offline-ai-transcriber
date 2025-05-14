@@ -4,7 +4,7 @@ This project is an open-source, modular system designed to continuously capture 
 
 ## System Architecture
 
-The system comprises several key components that work together:
+The system is 3 different components that work together:
 
 ```mermaid
 graph TD
