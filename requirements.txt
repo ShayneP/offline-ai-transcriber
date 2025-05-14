@@ -1,0 +1,7 @@
+livekit-agents[silero,turn-detector,groq, openai]~=1.0
+sqlalchemy
+alembic
+python-dotenv
+flask
+flask-sqlalchemy
+flask-cors

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Session: {{ session.title }}{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <a href="{{ url_for('index') }}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 mb-4 text-sm font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+        Back to Sessions
+    </a>
+    <h1 class="text-3xl font-semibold text-gray-800">{{ session.title }}</h1>
+    <div class="mt-2 text-sm text-gray-600">
+        <p><strong>Room:</strong> {{ session.session_metadata.get('room_name', 'N/A') if session.session_metadata else 'N/A' }}</p>
+        <p><strong>Started:</strong> {{ session.started_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+    </div>
+</div>
+
+<div class="bg-white shadow-md rounded-lg">
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+        <h2 class="text-xl font-semibold text-gray-700 mb-0">Transcripts</h2>
+        <span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-0.5 rounded-full">{{ transcripts|length }} total</span>
+    </div>
+    <div class="p-6">
+        {% if not transcripts %}
+            <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4" role="alert">
+                <p class="font-bold">No Transcripts</p>
+                <p>No transcripts found for this session.</p>
+            </div>
+        {% else %}
+            <div id="transcript-container" class="space-y-4">
+                {% for transcript in transcripts %}
+                    <div class="p-4 border border-gray-200 rounded-lg hover:shadow-sm transition-shadow duration-200">
+                        <div class="flex justify-between items-center mb-1">
+                            <div class="text-sm text-gray-500">
+                                <span class="font-semibold text-gray-700">{{ transcript.start_time.strftime('%H:%M:%S') }}</span>
+                                {% if transcript.confidence is not none %}
+                                    <span class="ml-2 inline-block bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded-full">
+                                        Confidence: {{ "%.0f"|format(transcript.confidence * 100) }}%
+                                    </span>
+                                {% endif %}
+                                {% if transcript.duration_ms %}
+                                    <span class="ml-2 inline-block bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">
+                                        {{ "%.1f"|format(transcript.duration_ms / 1000) }}s
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="text-gray-800">
+                            {{ transcript.text }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const menuButton = document.querySelector('[aria-controls="mobile-menu"]');
+    if (menuButton) {
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuButton.addEventListener('click', () => {
+            const isExpanded = menuButton.getAttribute('aria-expanded') === 'true' || false;
+            menuButton.setAttribute('aria-expanded', !isExpanded);
+            mobileMenu.classList.toggle('hidden');
+            menuButton.querySelectorAll('svg').forEach(svg => svg.classList.toggle('hidden'));
+        });
+    }
+</script>
+{% endblock %}

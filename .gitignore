@@ -1,0 +1,7 @@
+.env
+voice_transcripts.db
+vox-box/cache
+vox-box/venv
+venv
+__pycache__/
+**/__pycache__/

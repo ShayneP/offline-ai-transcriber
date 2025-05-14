@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Analyze Session: {{ session.title }}{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <a href="{{ url_for('index') }}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 mb-4 text-sm font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+        Back to Sessions
+    </a>
+    <h1 class="text-3xl font-semibold text-gray-800">Analysis: {{ session.title }}</h1>
+    <div class="mt-2 text-sm text-gray-600">
+        <p><strong>Room:</strong> {{ session.session_metadata.get('room_name', 'N/A') if session.session_metadata else 'N/A' }}</p>
+        <p><strong>Transcript Count:</strong> {{ analysis.transcript_count }}</p>
+        <p><strong>Total Characters:</strong> {{ analysis.total_characters }}</p>
+    </div>
+</div>
+
+<div class="space-y-6">
+    <div class="bg-white shadow-md rounded-lg">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-700 mb-0">Transcript Summary</h2>
+        </div>
+        <div class="p-6">
+            {% if analysis.summary %}
+                <p class="text-gray-700 whitespace-pre-wrap">{{ analysis.summary }}</p>
+            {% else %}
+                <p class="text-gray-500">Summary could not be generated or is not available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="bg-white shadow-md rounded-lg">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-700 mb-0">Combined Transcript Text</h2>
+        </div>
+        <div class="p-6">
+            <pre class="p-4 bg-gray-50 rounded-md text-sm text-gray-800" style="max-height: 400px; overflow-y: auto; white-space: pre-wrap;">{{ combined_text }}</pre>
+        </div>
+    </div>
+</div>
+{% endblock %}
