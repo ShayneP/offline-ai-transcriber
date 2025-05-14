@@ -37,14 +37,17 @@ async def entrypoint(ctx: JobContext):
         if transcript.is_final:
             save_transcript(
                 text=transcript.transcript,
-                confidence=transcript.confidence if hasattr(transcript, 'confidence') else None,
+                confidence=None,
                 is_final=True,
-                duration_ms=transcript.duration_ms if hasattr(transcript, 'duration_ms') else None
+                duration_ms= None
             )
 
     my_agent = TranscriptionAgent(
         instructions="You are a helpful assistant that transcribes user speech to text.",
-        stt=openai.STT(base_url="http://localhost:5002/v1", model="Systran/faster-whisper-small"),
+        stt=openai.STT(
+            base_url="http://localhost:5002/v1",
+            model="Systran/faster-whisper-small"
+        ),
         vad=silero.VAD.load()
     )
 

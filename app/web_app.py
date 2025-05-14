@@ -106,9 +106,12 @@ def analyze_session(session_id):
         ).all()
 
         combined_text = "\n".join([t.text for t in transcripts])
-        summary = "Summary could not be generated." # Default summary
+        summary = session.summary # Attempt to get existing summary
 
-        if client and combined_text:
+        if summary:
+            print(f"Using cached summary for session {session_id}")
+        elif client and combined_text:
+            print(f"No cached summary found for session {session_id}. Generating new summary.")
             try:
                 ollama_model = os.environ.get("OLLAMA_MODEL", "gemma3:4b")
                 print(f"Attempting to summarize with Ollama model: {ollama_model} using base_url: {client.base_url}")
@@ -129,6 +132,9 @@ def analyze_session(session_id):
                 )
                 if chat_completion.choices:
                     summary = chat_completion.choices[0].message.content.strip()
+                    session.summary = summary # Save the new summary
+                    db.commit() # Commit the change to the database
+                    print(f"New summary saved for session {session_id}")
                 else:
                     summary = "LLM returned no choices for summary."
                     print("LLM returned no choices.")
@@ -141,6 +147,9 @@ def analyze_session(session_id):
         elif not combined_text:
             summary = "No text to summarize."
             print("No text provided for summarization.")
+
+        if summary is None: # Ensure summary is not None if it wasn't generated or cached
+            summary = "Summary could not be generated or retrieved."
 
         analysis_result = {
             "session_id": str(session_id),

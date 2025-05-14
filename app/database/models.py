@@ -32,6 +32,7 @@ class Session(Base):
     started_at = Column(DateTime, default=datetime.utcnow)
     ended_at = Column(DateTime, nullable=True)
     session_metadata = Column(JSON, nullable=True)
+    summary = Column(Text, nullable=True) # Added field for storing summary
 
     user = relationship("User", back_populates="sessions")
     transcripts = relationship("Transcript", back_populates="session")
