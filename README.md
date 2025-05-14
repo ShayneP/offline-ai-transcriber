@@ -14,7 +14,7 @@ graph TD
     LA -- Stores Transcript --> DB[SQLite Database];
     FS[Flask Web Server] -- Reads Transcripts --> DB;
     FS -- Serves UI --> UserBrowser[User's Browser];
-    FS -- Summarization --> OLLAMA[Ollama (Local LLM)];
+    FS -- Summarization --> OLLAMA[Ollama];
 
     subgraph "Audio Input & Processing"
         A
